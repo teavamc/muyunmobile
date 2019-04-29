@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="ShishiMapping">
+	<!--表名 -->
+	<sql id="shishitable">
+		tb_shishi
+	</sql>
+
+	<sql id="shishi">
+		shiid,title,type,adddate,reldate,content,pic,video,uid,uname,remark
+	</sql>
+	 
+	<!--查询实时信息-->
+	<select id="getShishi" parameterType="pd" resultType="TbShishi">
+	select 
+	shiid,title,type,adddate,reldate,content,pic,video,uid,uname,remark
+	from <include refid="shishitable"></include> 
+	order by adddate desc
+	limit ${begin},${length}
+	</select>
+	
+	<!--根据shiid查询实时信息-->
+	<select id="getShishiFromshiid" parameterType="pd" resultType="TbShishi">
+	select 
+	shiid,title,type,adddate,reldate,content,pic,video,uid,uname,remark
+	from <include refid="shishitable"></include> 
+	where shiid=#{shiid} 
+	</select>
+	
+	<!--查询shiid查询舆情信息-->
+	<select id="getShishiDateFromshiid" parameterType="pd" resultType="TbShishi">
+	select 
+	shiid,title,type,adddate,reldate,content,pic,video,uid,uname,remark
+	from <include refid="shishitable"></include> 
+	where uid=#{uid} and
+	adddate LIKE CONCAT(CONCAT('%', #{sdfhh}),'%')
+	</select>
+	
+	</mapper>

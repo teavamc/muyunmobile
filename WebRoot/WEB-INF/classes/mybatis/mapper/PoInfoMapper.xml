@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="PoInfoMapper">
+	<resultMap type="PoInfo" id="PoInfoZtreeResultMap">
+	<id column="poinid" property="poinid"/>
+	<result column="title" property="title"/>
+	<result column="type" property="type"/>
+	<result column="content" property="content"/>
+	<result column="adddate" property="adddate"/>
+	<result column="reldate" property="reldate"/>
+	<result column="uname" property="uname"/>
+	<result column="uid" property="uid"/>
+	<result column="remark" property="remark"></result>
+	</resultMap>
+	<!-- 字段值 -->
+	<sql id="Field">
+		 poinid,
+		 title,
+		 type,
+		adddate,
+		reldate,
+		 content,
+		uid,
+		uname,
+		remark
+	</sql>
+	
+	<sql id="FieldValue">
+		#{poinid},
+		#{title},
+		#{type},
+		#{adddate},
+		#{reldate},
+		#{content},
+		#{uid},
+		#{uname},
+		#{remark}
+		
+	</sql>
+	
+	<!--表名 -->
+	<sql id="tableName">
+		tb_policyinfo
+	</sql>
+	<!--通过ID获取通知 -->
+	<select id="querryById" parameterType="String" resultType="PoInfo">
+		select  
+			p1.poinid as poinid,
+			p1.title as title,
+			p1.type as type,
+			p1.adddate as adddate,
+			p1.reldate as reldate,
+			p1.content as content,
+			p1.uid as uid,
+			p1.uname as uname,
+			p1.remark as remark
+		from 
+			<include refid="tableName"></include> p1 
+		where p1.poinid = #{poinid} 
+	</select>
+	
+	
+	<select id="querryAllBytype" parameterType="String" resultType="PoInfo">
+		select  
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include> 
+		
+		where type=#{type} 
+		order by reldate DESC
+		
+	</select>
+	
+	<select id="querryAllByRemark" parameterType="String" resultType="PoInfo">
+		select  
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+		
+		where remark=#{remark}
+		
+	</select>
+	<!--通过通知标题模糊查询id列表 -->
+	<select id="querryAllBytitle" parameterType="String" resultType="PoInfo">
+		select  
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+		where title LIKE CONCAT(CONCAT('%', #{title}),'%')
+	</select>
+	
+	<!--通过标题模糊查询id列表  分页查询-->
+	<select id="listSearchPoInfoforpage" parameterType="pd" resultType="PoInfo">
+		select  
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+		where title LIKE CONCAT(CONCAT('%', #{searchInput}),'%') 
+		
+		order by reldate DESC
+			limit #{begin},#{length} 
+	</select>
+	<!--通过标题模糊查询id列表个数  分页查询-->
+	<select id="totalSearchPoInfoforpage" parameterType="String" resultType="Int">
+		select  
+			count(*)
+		from 
+			<include refid="tableName"></include>
+		where title LIKE CONCAT(CONCAT('%', #{searchInput}),'%') 
+		
+	</select>
+	
+	
+	<!--查询所有通知  -->
+	<select id="listAllPoInfo" parameterType="String" resultType="PoInfo">
+		select  
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+	</select>
+	
+	
+	
+	<!--根据类别查询所有通知   分页查询 -->
+	<select id="listAllPoInfoforpage" parameterType="pd" resultType="PoInfo">
+		select  
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+			where type=#{type} 
+			order by reldate DESC
+			limit #{begin},#{length} 
+	</select>
+	
+	
+	<!--根据类别查询所有通知的个数   分页查询 -->
+	<select id="totalallinfo" parameterType="String" resultType="Int">
+		select  
+			count(poinid)
+		from 
+			<include refid="tableName"></include>
+			where type=#{type}
+	</select>
+	
+	<!--新增通知 -->
+	<insert id="insertPoInfo" parameterType="PoInfo">
+		insert into 
+			<include refid="tableName"></include> 
+		(
+			<include refid="Field"></include>
+		) values (
+			<include refid="FieldValue"></include>
+		)
+	</insert>
+	<!--删除通知-->
+	<delete id="deletePoInfoById" parameterType="String">
+		delete from 
+		<include refid="tableName"></include> 
+		where poinid=#{poinid} 
+	</delete>
+	<!--编辑通知 -->
+	<update id="editPoInfo" parameterType="pd">
+		update 
+		<include refid="tableName"></include> 
+		set title=#{title},
+			type=#{type},
+			content=#{content},
+			remark=#{remark}
+			
+		where 
+			poinid=#{poinid}
+	</update>
+	
+	</mapper>

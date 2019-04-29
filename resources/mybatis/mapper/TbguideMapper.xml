@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbguideMapping">
+	<!--表名 -->
+	<sql id="tbguidetable">
+		tb_guide
+	</sql>
+	<sql id="tbguide">
+		guid, guname, gupic, gutype, content, address, fname, fphone, greadtotal, pushdate, 
+    uid, uname, remark
+	</sql>
+	
+	<!--根据浏览次数和发布时间的降序展示指南列表-->
+	<select id="getGuideFromGreadtotal" parameterType="pd" resultType="TbGuide">
+	select 
+	guid, guname, gupic, gutype, content, address, fname, fphone, greadtotal, pushdate, 
+    uid, uname, remark
+	from <include refid="tbguidetable"></include> 
+	order by greadtotal desc,pushdate desc
+	limit #{begin},#{length}
+	</select>
+	
+	<!--根据浏览次数和发布时间的降序展示有效的指南数据-->
+	<select id="getGuideFromGreadtotalbyremark" parameterType="int" resultType="TbGuide">
+	select 
+	guid, guname, gupic, gutype, content, address, fname, fphone, greadtotal, pushdate, 
+    uid, uname, remark
+	from <include refid="tbguidetable"></include> 
+	where remark=#{remark}
+	order by greadtotal desc,pushdate desc
+	</select>
+	
+	<!--根据有效查询所有指南数据-->
+	<select id="getGuidebyremark" parameterType="int" resultType="TbGuide">
+	select 
+	guid, guname, gupic, gutype, content, address, fname, fphone, greadtotal, pushdate, 
+    uid, uname, remark
+	from <include refid="tbguidetable"></include> 
+	where remark=#{remark}
+	</select>
+	
+	<!--根据有效查询所有指南数据-->
+	<select id="totalallbyremark" parameterType="int" resultType="Int">
+	select 
+		count(guid) 
+	from <include refid="tbguidetable"></include> 
+		where remark=#{remark}
+	</select>
+	
+
+	<!--根据 标题 或 类别 模糊查询指南-->
+	<select id="getGuideFromTitleOrType" parameterType="pd" resultType="TbGuide">
+	select 
+	guid, guname, gupic, gutype, content, address, fname, fphone, greadtotal, pushdate, 
+    uid, uname, remark
+	from <include refid="tbguidetable"></include> 
+	where guname LIKE CONCAT(CONCAT('%', #{searchInput}),'%') or gutype LIKE CONCAT(CONCAT('%', #{searchInput}),'%')
+	order by greadtotal desc,pushdate desc
+	limit #{begin},#{length}
+	</select>
+	
+	<!--根据ID查询指南具体内容-->
+	<select id="getGuideFromguid" parameterType="pd" resultType="TbGuide">
+	select 
+	guid, guname, gupic, gutype, content, address, fname, fphone, greadtotal, pushdate, 
+    uid, uname, remark
+	from <include refid="tbguidetable"></include> 
+	where guid=#{guid}
+
+	</select>
+		
+		
+	<update id="updatereadtotal" parameterType="pd">
+	update <include refid="tbguidetable"></include> 
+	set
+	greadtotal=#{greadtotal}
+	where  
+	guid=#{guid}
+	</update>
+		
+	
+	</mapper>

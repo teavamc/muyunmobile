@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbPartymember">
+	<!--表名 -->
+	<sql id="tb_partymember">
+		tb_partymember
+	</sql>
+	<sql id="partymemberinfo">
+		pid,
+	pname,
+	sex,
+	age,
+	uid,
+	phone,
+	pic,
+	wcid,
+	idcard,
+	family,
+	company,
+	education,
+	joindate,
+	regulardate,
+	status,
+	groups,
+	village,
+	remark
+	</sql>
+	
+	<!--根据党员身份证查询党员信息-->
+	<select id="getpartyinfofromidcard" parameterType="String" resultType="TbPartymember">
+	select 
+	pid,
+	pname,
+	sex,
+	age,
+	uid,
+	phone,
+	pic,
+	wcid,
+	idcard,
+	family,
+	company,
+	education,
+	joindate,
+	regulardate,
+	status,
+	groups,
+	village,
+	remark
+	from tb_partymember
+	where idcard=#{idcard}
+	</select>
+	
+	<!--根据党员账号查询党员信息-->
+	
+	<!--根据党员姓名查询党员编号-->
+	<select id="getpidbypname" parameterType="String" resultType="String">
+	select 
+	pid
+	from tb_partymember 
+	where pname=#{pname}
+	</select>
+	
+	
+	<!--根据用户账号查询党员信息-->
+	<select id="getpartymemberfromuid" parameterType="String" resultType="TbPartymember">
+	select 
+	<include refid="partymemberinfo"></include>
+	 from tb_partymember where uid=#{uid}
+	</select>
+	
+	<!--根据党员身份证查询党员名是否存在-->
+	<select id="yanzhengppartymember" parameterType="String" resultType="String">
+	select pname from tb_partymember where idcard=#{idcard}
+	</select>
+	
+	
+	<!--根据用户账号查询党员身份证-->
+	<select id="getpartymemberidcard" parameterType="String" resultType="String">
+	select idcard from tb_partymember where uid=#{uid}
+	</select>
+	
+	<!--根据idcard修改党员用户账号uid-->
+	<update id="edituid" parameterType="pd">
+	update tb_partymember 
+	set 
+	uid=#{uid},
+	phone=#{phone},
+	wcid=#{wcid}
+	where idcard=#{idcard}
+	</update>
+	
+	<!--根据uid修改党员电话号码（换绑操作）-->
+	<update id="changephone" parameterType="pd">
+	update tb_partymember 
+	set 
+	phone=#{phone}
+	where uid=#{uid}
+	</update>
+	
+	
+	
+	</mapper>

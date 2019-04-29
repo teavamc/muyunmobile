@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="XiaoCunMapping">
+	<!--表名 -->
+	<sql id="xiaocuntable">
+		tb_xiaocun
+	</sql>
+	<sql id="xiaocun">
+		jsid, title, type, adddate, reldate, content, adduid, adduname, uid, uname, remark
+	</sql>
+	
+	<!--查询小村家事信息-->
+	<select id="getXiaocun" parameterType="pd" resultType="TbXiaocun">
+	select 
+	jsid, title, type, adddate, reldate, content, adduid, adduname, uid, uname, remark
+	from <include refid="xiaocuntable"></include> 
+
+	order by adddate desc
+	limit #{begin},#{length}
+	</select>
+	
+	
+	<!--查询小村家事信息-->
+	<select id="getMyXiaocun" parameterType="pd" resultType="TbXiaocun">
+	select 
+	jsid, title, type, adddate, reldate, content, adduid, adduname, uid, uname, remark
+	from <include refid="xiaocuntable"></include> 
+	where adduid=#{adduid}
+	order by adddate desc
+	limit #{begin},#{length}
+	</select>
+	
+	<!--根据jsid查询小村家事信息-->
+	<select id="getXiaocunFromjsid" parameterType="pd" resultType="TbXiaocun">
+	select 
+	jsid, title, type, adddate, reldate, content, adduid, adduname, uid, uname, remark
+	from <include refid="xiaocuntable"></include> 
+	where jsid=#{jsid}
+	</select>
+	
+	
+	<!--以1小时为间隔  防止用户恶意多次提交-->
+	<select id="getXiaocunDateFromjsid" parameterType="pd" resultType="TbXiaocun">
+	select 
+	jsid, title, type, adddate, reldate, content, adduid, adduname, uid, uname, remark
+	from <include refid="xiaocuntable"></include> 
+	where adduid=#{adduid} and
+	adddate LIKE CONCAT(CONCAT('%', #{sdfhh}),'%')
+	</select>
+
+<!-- 增加小村家事信息 -->
+<insert id="insertXiaocun" parameterType="pd">
+insert into <include refid="xiaocuntable"></include>
+(title, type, adddate, content, adduid, adduname, remark)
+values
+(
+#{title},
+#{type},
+#{adddate},
+#{content},
+#{adduid},
+#{adduname},
+1
+)
+</insert>
+
+<delete id="deletexiaocun" parameterType="pd">
+	delete from 
+	<include refid="xiaocuntable"></include> 
+	where jsid=#{jsid}
+	</delete>
+	
+	
+
+	<!-- 根据jsid修改信息  暂不需要
+<update id="updateXiaocun" parameterType="pd">
+update 
+<include refid="xiaocuntable"></include> 
+set
+jsid=#{jsid}
+<if test="title!=''and title!=null">
+,title=#{title}
+</if>
+<if test="type!=''and type!=null">
+,type=#{type}
+</if>
+<if test="content != '' and content != null">
+,content=#{content}
+</if>
+<if test="adddate != '' and adddate != null">
+,adddate=#{adddate}
+</if>
+<if test="adduid != '' and adduid != null">
+,adduid=#{adduid}
+</if>
+<if test="adduname != '' and adduname != null">
+,adduname=#{adduname}
+</if>
+<if test="remark != '' and remark != null">
+,remark=#{remark}
+</if>
+where yqid=#{yqid}
+</update>
+	
+	-->
+	
+
+	
+	</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbPCcommentMapping">
+	<!-- 字段值 -->
+	<sql id="TbPCcomment">
+		coid,pcid,uid,ccontent,issensitive,cdate
+	</sql>
+	
+	<!--表名 -->
+	<sql id="TbPCcommenttable">
+		tb_pccomment
+	</sql>
+	<sql id="usersTable">
+		tb_user
+	</sql>
+	
+	<!--  查询暮云圈评论信息 -->
+	<select id="getPccomment" parameterType="pd" resultType="TbPccomment">
+		select co.coid as coid,
+		co.pcid as pcid,
+		co.uid as uid, 
+		co.ccontent as ccontent,
+		co.issensitive as issensitive,
+		co.cdate as cdate,
+		us.uname as uname
+		from (<include refid="TbPCcommenttable"/>co left join<include refid="usersTable"/>us on co.uid=us.uid)
+		where co.pcid=#{pcid}
+	</select>
+	
+	<!--  根据coid查询暮云圈单条评论信息 -->
+	<select id="getSensitiveBycoid" parameterType="pd" resultType="TbPccomment">
+		select co.coid as coid,
+		co.pcid as pcid,
+		co.uid as uid, 
+		co.ccontent as ccontent,
+		co.issensitive as issensitive,
+		co.cdate as cdate,
+		us.uname as uname
+		from (<include refid="TbPCcommenttable"/>co left join<include refid="usersTable"/>us on co.uid=us.uid)
+		where co.coid=#{coid}
+	</select>
+	
+	
+	<!-- 增加评论 -->
+	<insert id="addPccomment" parameterType="pd">
+	insert
+	into <include refid="TbPCcommenttable"></include>
+	(
+	coid,
+	pcid,
+	uid,
+	ccontent,
+	issensitive,
+	cdate
+	)
+	values(
+	#{coid},
+	#{pcid},
+	#{uid},
+	#{ccontent},
+	#{issensitive},
+	#{cdate}
+	)
+	</insert>
+	
+	<!-- 删除评论 -->
+	<delete id="delPccomment" parameterType="pd">
+	delete from <include refid="TbPCcommenttable"></include>
+	where coid=#{coid} 
+	</delete>
+	
+	</mapper>

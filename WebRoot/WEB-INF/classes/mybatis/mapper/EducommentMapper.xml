@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="EducommentMapping">
+	<!-- 字段值 -->
+	<sql id="TbEducomment">
+		educid, eid, uid, comment, datetime
+	</sql>
+	
+	<!--表名 -->
+	<sql id="TbEducommenttable">
+		tb_educomment
+	</sql>
+	<sql id="usersTable">
+		tb_user
+	</sql>
+	
+	<!--  根据学习id查询评论信息 -->
+	<select id="getEducomment" parameterType="pd" resultType="TbEducomment">
+		select co.educid as educid,
+		co.eid as eid,
+		co.uid as uid, 
+		co.comment as comment,
+		co.datetime as datetime,
+		us.headimg as headimg,
+		us.uname as uname
+		from (<include refid="TbEducommenttable"/>co left join<include refid="usersTable"/>us on co.uid=us.uid)
+		where co.eid=#{eid}
+	</select>
+	
+	
+	<!--  根据学习评论id查询评论具体信息 -->
+	<select id="getComment" parameterType="pd" resultType="TbEducomment">
+		select co.educid as educid,
+		co.eid as eid,
+		co.uid as uid, 
+		co.comment as comment,
+		co.datetime as datetime,
+		us.headimg as headimg,
+		us.uname as uname
+		from (<include refid="TbEducommenttable"/>co left join<include refid="usersTable"/>us on co.uid=us.uid)
+		where co.educid=#{educid}
+	</select>
+	
+	<!-- 增加评论 -->
+	<insert id="addEducomment" parameterType="pd">
+	insert
+	into <include refid="TbEducommenttable"></include>
+	(
+	educid,
+	eid,
+	uid,
+	comment,
+	datetime
+	)
+	values(
+	#{educid},
+	#{eid},
+	#{uid},
+	#{comment},
+	#{datetime}
+	)
+	</insert>
+	
+	<!-- 删除评论 -->
+	<delete id="delEducomment" parameterType="pd">
+	delete from <include refid="TbEducommenttable"></include>
+	where educid=#{educid} 
+	</delete>
+	
+	</mapper>

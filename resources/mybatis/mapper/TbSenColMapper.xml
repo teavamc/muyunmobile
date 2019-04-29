@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbSenolMapping">
+	<!--表名 -->
+	<sql id="tb_sencollecttable">
+		tb_sencollect
+	</sql>
+	<sql id="tb_sencollect">
+		id,sencollect
+	</sql>
+	
+	<!-- 查询全部敏感字符集 -->
+	<select id="getAllSenCol"  resultType="TbSencollect">
+		select 
+		id,sencollect
+		from <include refid="tb_sencollecttable"></include>
+	</select>
+	
+	<!-- 新增敏感字符 -->
+	<insert id="addSenCol" parameterType="pd">
+		insert into <include refid="tb_sencollecttable"></include>
+		(sencollect)
+		values
+		(#{sencollect})
+	</insert>
+	
+	<!-- 删除敏感字符 -->
+	<delete id="delSenCol" parameterType="pd">
+		delete 
+		from <include refid="tb_sencollecttable"></include>
+		where id=#{senid}
+	</delete>
+	
+	</mapper>

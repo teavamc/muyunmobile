@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbZbMapping">
+	
+	<sql id="zbtable">
+		tb_zhiban
+	</sql>
+
+	<sql id="zb">
+		zbid,pid,pname,position,zbpic,zbsum,zbwords,zbdate,remark
+	</sql>
+	
+	<!-- 获取所有的值班信息  -->
+	<select id="getAllZhiban" parameterType="pd" resultType="TbZhiban">
+	select 
+	zbid,pid,pname,position,zbpic,zbsum,zbwords,zbdate,remark
+	from <include refid="zbtable"></include> 
+	order by zbdate desc
+	limit ${begin},${length}
+	</select>
+	
+	<!-- 获取当前时间的的值班信息  -->
+	<select id="getAllZhibannow" parameterType="string" resultType="TbZhiban">
+	select 
+	zbid,pid,pname,position,zbpic,zbsum,zbwords,zbdate,remark
+	from <include refid="zbtable"></include> 
+	where zbdate=#{zbdate} 
+	</select>
+	
+	<!-- 获取值班详情 -->
+	<select id="getZbFromzbid" parameterType="string" resultType="TbZhiban">
+	select 
+	zbid,pid,pname,position,zbpic,zbsum,zbwords,zbdate,remark
+	from <include refid="zbtable"></include> 
+	where zbid=#{zbid} 
+	</select>
+
+	
+	</mapper>

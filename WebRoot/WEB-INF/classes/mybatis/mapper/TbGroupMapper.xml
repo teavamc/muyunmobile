@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbGroupMapping">
+	<!--表名 -->
+	<sql id="grouptable">
+		tb_group
+	</sql>
+	<sql id="group">
+		gid, name, number, people, uid, uname, datetime, introduction, remark
+	</sql>
+	
+	<!--根据gid党小组信息-->
+	<select id="getGroupByGid" parameterType="pd" resultType="TbGroup">
+	select 
+	gid, name, number, people, uid, uname, datetime, introduction, remark
+	from <include refid="grouptable"></include> 
+	where gid=#{gid}
+	</select>
+	
+	
+	<!--根据uid党小组信息-->
+	<select id="getGroupByuid" parameterType="pd" resultType="TbGroup">
+	select 
+	gid, name, number, people, uid, uname, datetime, introduction, remark
+	from <include refid="grouptable"></include> 
+	where uid=#{uid}
+	</select>
+	
+
+
+
+	<!-- 根据jsid修改信息  暂不需要
+<update id="updateXiaocun" parameterType="pd">
+update 
+<include refid="xiaocuntable"></include> 
+set
+jsid=#{jsid}
+<if test="title!=''and title!=null">
+,title=#{title}
+</if>
+<if test="type!=''and type!=null">
+,type=#{type}
+</if>
+<if test="content != '' and content != null">
+,content=#{content}
+</if>
+<if test="adddate != '' and adddate != null">
+,adddate=#{adddate}
+</if>
+<if test="adduid != '' and adduid != null">
+,adduid=#{adduid}
+</if>
+<if test="adduname != '' and adduname != null">
+,adduname=#{adduname}
+</if>
+<if test="remark != '' and remark != null">
+,remark=#{remark}
+</if>
+where yqid=#{yqid}
+</update>
+	
+	
+	<delete id="deleteYuqing" parameterType="pd">
+	delete from 
+	<include refid="yuqingtable"></include> 
+	where yqid=#{yqid}
+	</delete>
+	-->
+	
+	</mapper>

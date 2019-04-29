@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbHdMapping">
+	
+	<sql id="hdtable">
+		tb_huodong
+	</sql>
+
+	<sql id="hd">
+		hdid, hdtitle, hdtype, hdloc, hdnum, hdbtime, hdetime, hdpic, hdsum, hdadddate, uid, remark
+	</sql>
+	 
+	<select id="getHd" parameterType="pd" resultType="TbHuodong">
+	select 
+	hdid, hdtitle, hdtype, hdloc, hdnum, hdbtime, hdetime, hdpic, hdsum, hdadddate, uid, remark
+	from <include refid="hdtable"></include> 
+	order by hdadddate desc
+	limit ${begin},${length}
+	</select>
+	
+	<select id="getHdFromhdid" parameterType="pd" resultType="TbHuodong">
+	select 
+	hdid, hdtitle, hdtype, hdloc, hdnum, hdbtime, hdetime, hdpic, hdsum, hdadddate, uid, remark
+	from <include refid="hdtable"></include> 
+	where hdid=#{hdid} 
+	</select>
+
+	
+	<!--以1小时为间隔  防止用户恶意多次提交-->
+	<select id="getHdDateFromhdid" parameterType="pd" resultType="TbHuodong">
+	select 
+	hdid, hdtitle, hdtype, hdloc, hdnum, hdbtime, hdetime, hdpic, hdsum, hdadddate, uid, remark
+	from <include refid="hdtable"></include> 
+	where uid=#{uid} and
+	hdadddate LIKE CONCAT(CONCAT('%', #{sdfhh}),'%')
+	</select>
+
+<!-- 增加小村家事信息 -->
+<insert id="insertHuodong" parameterType="pd">
+insert into <include refid="hdtable"></include>
+(hdtitle, hdtype, hdloc, hdnum, hdbtime, hdetime, hdpic, hdsum, hdadddate, uid, remark)
+values
+(
+#{hdtitle},
+#{hdtype},
+#{hdloc},
+#{hdnum},
+#{hdbtime},
+#{hdetime},
+#{hdpic},
+#{hdsum},
+#{hdadddate},
+#{uid},
+1
+)
+</insert>
+
+<delete id="deletehuodong" parameterType="pd">
+	delete from 
+	<include refid="hdtable"></include> 
+	where hdid=#{hdid} 
+	</delete>
+	
+	
+	
+	</mapper>

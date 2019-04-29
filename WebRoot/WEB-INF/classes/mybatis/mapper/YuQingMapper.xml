@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="YuQingMapping">
+	<!--表名 -->
+	<sql id="yuqingtable">
+		tb_yuqing
+	</sql>
+	<sql id="yuqing">
+		yqid, yqtype, content, uploadimage, adddate, adduid, adduname, remark
+	</sql>
+	<sql id="TbYQcommenttable">
+		tb_yqcomment
+	</sql>
+	
+	<!--查询舆情信息-->
+	<select id="getYuqing" parameterType="pd" resultType="TbYuqing">
+	select 
+	yqid, yqtype, content, uploadimage, adddate, adduid, adduname, remark
+	from <include refid="yuqingtable"></include> 
+
+	order by adddate desc
+	limit ${begin},${length}
+	</select>
+	
+	
+	<!--查询舆情信息-->
+	<select id="getYuqingFromInfo" parameterType="pd" resultType="TbYuqing">
+	select 
+	yqid, yqtype, content, uploadimage, adddate, adduid, adduname, remark
+	from <include refid="yuqingtable"></include> 
+	where yqtype LIKE CONCAT(CONCAT('%', #{searchinfo}),'%') or adddate LIKE CONCAT(CONCAT('%', #{searchinfo}),'%')
+	order by adddate desc
+	limit ${begin},${length}
+	</select>
+	
+	<!--根据yqid查询舆情信息-->
+	<select id="getYuqingFromyqid" parameterType="pd" resultType="TbYuqing">
+	select 
+	yqid, yqtype, content, uploadimage, adddate, adduid, adduname, remark
+	from <include refid="yuqingtable"></include> 
+	where yqid=#{yqid}
+	</select>
+	
+	
+	<!--查询yqid查询舆情信息-->
+	<select id="getYuqingDateFromyqid" parameterType="pd" resultType="TbYuqing">
+	select 
+	yqid, yqtype, content, uploadimage, adddate, adduid, adduname, remark
+	from <include refid="yuqingtable"></include> 
+	where adduid=#{adduid} and
+	adddate LIKE CONCAT(CONCAT('%', #{sdfhh}),'%')
+	</select>
+
+<!-- 增加舆情信息 -->
+<insert id="insertYuqing" parameterType="pd">
+insert into <include refid="yuqingtable"></include>
+(yqtype, content, uploadimage, adddate, adduid,adduname, remark)
+values
+(
+#{yqtype},
+#{content},
+#{uploadimage},
+#{adddate},
+#{adduid},
+#{adduname},
+1
+)
+</insert>
+
+	<!-- 根据yqid修改信息 -->
+<update id="updateYuqing" parameterType="pd">
+update 
+<include refid="yuqingtable"></include> 
+set
+yqid=#{yqid}
+<if test="yqtype!=''and yqtype!=null">
+,yqtype=#{yqtype}
+</if>
+<if test="content != '' and content != null">
+,content=#{content}
+</if>
+<if test="uploadimage != '' and uploadimage != null">
+,uploadimage=#{uploadimage}
+</if>
+<if test="adddate != '' and adddate != null">
+,adddate=#{adddate}
+</if>
+<if test="adduid != '' and adduid != null">
+,adduid=#{adduid}
+</if>
+<if test="adduname != '' and adduname != null">
+,adduname=#{adduname}
+</if>
+<if test="remark != '' and remark != null">
+,remark=#{remark}
+</if>
+where yqid=#{yqid}
+</update>
+	
+	
+	<delete id="deleteYuqing" parameterType="pd">
+	delete yq,yqc 
+	from 
+	(<include refid="yuqingtable"/> yq left join <include refid="TbYQcommenttable"/> yqc on yq.yqid=yqc.yqid)
+	where yq.yqid=#{yqid}
+	</delete>
+	
+	
+	</mapper>

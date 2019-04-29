@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbPCircleMapping">
+	<!-- 字段值 -->
+	<sql id="TbPCircle">
+		pcid, uid, pcontent,adddate,imgurl,pcsennum
+	</sql>
+	
+	<!--表名 -->
+	<sql id="TbPCircletable">
+		tb_partycircle
+	</sql>
+	<sql id="usersTable">
+		tb_user
+	</sql>
+	<sql id="tb_pccomment">
+		tb_pccomment
+	</sql>
+	<sql id="tb_pcpraise">
+		tb_pcpraise
+	</sql>
+	
+	<!--  查询暮云圈信息 -->
+	<select id="getCircle" parameterType="pd" resultType="TbPartycircle">
+		select cir.pcid as pcid, 
+		cir.uid as uid, 
+		us.uname as uname, 
+		cir.pcontent as pcontent,
+		cir.adddate as adddate,
+		cir.imgurl as imgurl
+		from (<include refid="TbPCircletable"/> cir left join<include refid="usersTable"/>us on cir.uid=us.uid)
+		order by adddate desc
+		limit #{begin},#{length} 
+	</select>
+	
+	<!--  查询个人暮云圈信息 -->
+	<select id="getCircleByUid" parameterType="pd" resultType="TbPartycircle">
+		select cir.pcid as pcid, 
+		cir.uid as uid, 
+		us.uname as uname, 
+		cir.pcontent as pcontent,
+		cir.adddate as adddate,
+		cir.imgurl as imgurl
+		from (<include refid="TbPCircletable"/> cir left join<include refid="usersTable"/>us on cir.uid=us.uid)
+		where cir.uid=#{uid}
+		order by adddate desc
+		limit #{begin},#{length} 
+	</select>
+	
+	
+	<!--  根据敏感评论数目由多到少展示全部信息 -->
+	<select id="getCircleOderBysennum" parameterType="pd" resultType="TbPartycircle">
+		select cir.pcid as pcid, 
+		cir.uid as uid, 
+		us.uname as uname, 
+		cir.pcontent as pcontent,
+		cir.adddate as adddate,
+		cir.imgurl as imgurl
+		from (<include refid="TbPCircletable"/> cir left join<include refid="usersTable"/>us on cir.uid=us.uid)
+		order by pcsennum desc
+		limit #{begin},#{length} 
+	</select>
+	
+	<!-- 根据pcid查询敏感条目数 -->
+	<select id="getSenTotalBypcid" parameterType="pd" resultType="Integer">
+		select pcsennum 
+		from <include refid="TbPCircletable"/>
+		where pcid=#{pcid}
+	</select>
+
+		<!--查询信息防止过分提交-->
+	<select id="getPcircleDateFromuid" parameterType="pd" resultType="TbPartycircle">
+	select 
+	pcid, uid, pcontent,adddate,imgurl
+	from <include refid="TbPCircletable"></include> 
+	where uid=#{uid} and
+	adddate LIKE CONCAT(CONCAT('%', #{sdfhh}),'%')
+	</select>
+	
+	<!-- 增加信息 -->
+<insert id="insertPcircle" parameterType="pd">
+insert into <include refid="TbPCircletable"></include>
+(uid, pcontent,adddate,imgurl,pcsennum)
+values
+(
+#{uid},
+#{pcontent},
+#{adddate},
+#{imgurl},
+0
+)
+</insert>
+
+<!-- 删除信息 -->
+<delete id="deletecircle" parameterType="pd">
+delete 
+pci,
+pcc,
+pcp
+from 
+(<include refid="TbPCircletable"/> pci left join <include refid="tb_pccomment"/> pcc on pci.pcid=pcc.pcid) 
+left join <include refid="tb_pcpraise"/> pcp on pci.pcid=pcp.pcid
+where 
+pci.pcid=#{pcid}
+</delete>
+
+<!-- 敏感数目修改 -->
+<update id="updatesennum" parameterType="pd">
+update <include refid="TbPCircletable"/>
+ set pcsennum=#{pcsennum} 
+ where pcid=#{pcid}
+
+</update>
+
+	
+	
+	</mapper>

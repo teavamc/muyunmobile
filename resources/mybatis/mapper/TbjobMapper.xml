@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbjobMapping">
+	<!--表名 -->
+	<sql id="tbjobtable">
+		tb_job
+	</sql>
+	<sql id="tbjob">
+		jid, jtype, company,picurl, position, url, phone, email, date, num, bedate, endate, uid, introduction,content,
+    uname, remark
+	</sql>
+	
+	
+	<!--根据发布日期查询职位信息-->
+	<select id="getjobbydate" parameterType="pd" resultType="Tbjob">
+	select 
+	jid, jtype, company, picurl,position, url, phone, email, date, num, bedate, endate, uid, introduction,content,
+    uname, remark
+	from <include refid="tbjobtable"></include> 
+	order by date desc
+	limit ${begin},${length}
+	</select>
+	
+	<!--根据jid查询职位信息-->
+	<select id="getcontentfromjid" parameterType="String" resultType="Tbjob">
+	select 
+	jid, jtype, company, picurl,position, url, phone, email, date, num, bedate, endate, uid, introduction,content,
+    uname, remark
+	from <include refid="tbjobtable"></include> 
+	where jid=#{jid}
+	</select>
+	
+	<!--根据是否有效查询职位信息-->
+	<select id="getjobbyremark" parameterType="int" resultType="Tbjob">
+	select 
+	jid, jtype, company, picurl,position, url, phone, email, date, num, bedate, endate, uid, introduction,content,
+    uname, remark
+	from <include refid="tbjobtable"></include> 
+	where remark=#{remark} 
+		order by date desc
+	</select>
+	
+	<!--根据类别查询所有通知的个数   分页查询 -->
+	<select id="totalalljobbyremark" parameterType="int" resultType="Int">
+		select  
+			count(jid)
+		from <include refid="tbjobtable"></include> 
+			where remark=#{remark} 
+	</select>
+	
+	<!--根据 标题 或 类别 模糊查询-->
+	<select id="getJobByPoOrTit" parameterType="pd" resultType="Tbjob">
+	select 
+	jid, jtype, company, picurl,position, url, phone, email, date, num, bedate, endate, uid, introduction,content,
+    uname, remark
+	from <include refid="tbjobtable"></include> 
+	where jtype LIKE CONCAT(CONCAT('%', #{searchInput}),'%') or position LIKE CONCAT(CONCAT('%', #{searchInput}),'%')
+	order by date desc
+	limit #{begin},#{length}
+	</select>
+	
+	<!--查询所有通知的个数   分页查询-->
+	<select id="totalalljob" parameterType="String" resultType="Int">
+		select  
+			count(jid)
+		from 
+			<include refid="tbjobtable"></include>
+			where position=#{position}
+	</select>
+	
+	
+	</mapper>

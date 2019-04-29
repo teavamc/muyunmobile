@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="GroupMuyunMapping">
+	<!--表名 -->
+	<sql id="groupmuyun">
+		myc_partymember
+	</sql>
+
+	<sql id="gmuyun">
+		pid,grouptype,uname,sex,nations,idcard,edulevel,birthday,partyjoindate,phone,address,notes
+	</sql>
+	 
+	<!--查询不同组的党员信息-->
+	<select id="getGmuyuntypelist" parameterType="pd" resultType="GroupMuyun">
+	select 
+	pid,grouptype,uname,sex,nations,idcard,edulevel,birthday,partyjoindate,phone,address,notes
+	
+	from <include refid="groupmuyun"></include> 
+	
+	where grouptype=#{grouptype}
+	order by pid desc
+	limit ${begin},${length}
+	</select>
+	
+	<!--根据pid查询单个党员的信息-->
+	<select id="getGmuyunofpid" parameterType="String" resultType="GroupMuyun">
+	select 
+	
+	pid,grouptype,uname,sex,nations,idcard,edulevel,birthday,partyjoindate,phone,address,notes
+	
+	from <include refid="groupmuyun"></include> 
+	
+	where pid=#{pid} 
+	</select>
+	
+	<!--  根据关键字查询所有文件   然后按照pid先后顺序排序 -->
+	<!-- concat用来拼接 -->
+	
+	<select id="getGmuyunlistformseach" parameterType="pd" resultType="GroupMuyun">
+		select 
+		pid,grouptype,uname,sex,nations,idcard,edulevel,birthday,partyjoindate,phone,address,notes
+		
+		from <include refid="groupmuyun"></include>
+		where 
+		uname LIKE CONCAT(CONCAT('%', #{searchInput}),'%') 
+		
+		order by pid desc
+		limit #{begin},#{length} 
+	</select>
+	
+	
+	 <!--根据类型查询数量用于分页 -->
+      <select id="querrynumberformtype" parameterType="pd" resultType="Int">
+		select  
+			count(pid)
+		from  <include refid="groupmuyun"></include>
+			where grouptype=#{grouptype}
+	</select>
+	
+	<!--根据类型查询数量用于分页 -->
+      <select id="querrynumberformtypes" parameterType="string" resultType="Int">
+		select  
+			count(pid)
+		from  <include refid="groupmuyun"></include>
+			where grouptype=#{grouptype}
+	</select>
+	
+	 <!--根据类型查询数量用于分页 -->
+      <select id="querrynumberformsex" parameterType="String" resultType="Int">
+		select  
+			count(pid)
+		from  <include refid="groupmuyun"></include>
+			where sex=#{sex}
+	</select>
+	
+	<!--根据类型查询数量用于分页 -->
+      <select id="querrynumber" parameterType="pd" resultType="Int">
+		select  
+			count(pid)
+		from  <include refid="groupmuyun"></include>
+	</select>
+	
+	
+	
+	</mapper>

@@ -1,0 +1,21 @@
+*{padding:0; margin:0;}
+.bg {
+position: absolute;
+z-index: -1;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+opacity: 0.8;
+}
+.h1{
+color:#92b9f4;
+position: relative;
+top: 25px;
+}
+h11{
+	color:#92b9f4;
+	position: relative;
+	top: 2px;
+	text-align:center;
+}

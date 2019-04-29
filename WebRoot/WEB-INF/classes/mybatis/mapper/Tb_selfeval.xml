@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="Tbselfmapping">
+	<!--表名 -->
+	<sql id="tb_selfeval">
+		tb_selfeval
+	</sql>
+	<sql id="tb_selfevalform">
+		sfid,
+		pid,
+		pname,
+		title,
+		state,
+		score,
+		sdate,
+		uid,
+		uname,
+		remark
+	</sql>
+	
+	<!-- 根据sfid查找信息 -->
+	<select id="getassfromsfid" parameterType="String" resultType="TbSelfeval">
+	select 
+	<include refid="tb_selfevalform"></include> 
+	from
+	<include refid="tb_selfeval"></include>
+	where sfid=#{sfid} 
+	</select>
+	
+	<!--  根据测评人员编号uid,pid查找自评信息-->
+	<select id="getassessfromuid" parameterType="String" resultType="TbSelfeval">
+	select
+	<include refid="tb_selfevalform"></include> 
+	from
+	<include refid="tb_selfeval"></include>
+	where uid=#{uid} and pid=#{pid} 
+	order by sdate desc
+	limit #{begin1},#{length} 
+	</select>
+	
+	<!--  根据测评人员编号uid,pid查找我评信息-->
+	<select id="getassessfromuidtohim" parameterType="String" resultType="TbSelfeval">
+	select
+	<include refid="tb_selfevalform"></include> 
+	from
+	<include refid="tb_selfeval"></include>
+	where uid=#{uid} and pid!=#{pid} 
+	order by sdate desc
+	limit #{begin2},#{length} 
+	</select>
+	
+	<!--  根据被测评人员编号pid查找他评信息-->
+	<select id="getassessfromuidtome" parameterType="String" resultType="TbSelfeval">
+	select
+	<include refid="tb_selfevalform"></include> 
+	from
+	<include refid="tb_selfeval"></include>
+	where uid!=#{uid} and pid=#{pid} 
+	order by sdate desc
+	limit #{begin3},#{length} 
+	</select>
+
+	<!--根据类别查询自评的个数   分页查询 -->
+	<select id="totalSearchAssforpage1" parameterType="pd" resultType="Int">
+		select  
+			count(sfid)
+		from 
+			<include refid="tb_selfeval"></include>
+			where uid=#{uid} and pid=#{pid}
+	</select>
+	<!--根据类别查询我评的个数   分页查询 -->
+	<select id="totalSearchAssforpage2" parameterType="pd" resultType="Int">
+		select  
+			count(sfid)
+		from 
+			<include refid="tb_selfeval"></include>
+			where uid=#{uid} and pid!=#{pid}
+	</select>
+	<!--根据类别查询他评的个数   分页查询 -->
+	<select id="totalSearchAssforpage3" parameterType="pd" resultType="Int">
+		select  
+			count(sfid)
+		from 
+			<include refid="tb_selfeval"></include>
+			where uid!=#{uid} and pid=#{pid}
+	</select>
+	
+	
+	<!--  新增自评互评信息-->
+	<insert id="insertsel" parameterType="pd">
+	insert into <include refid="tb_selfeval"></include>
+	(
+		pid,
+		pname,
+		title,
+		state,
+		score,
+		sdate,
+		uid,
+		uname,
+		remark
+		)
+	values(
+	#{pid},#{pname},#{title},#{state},#{score},#{sdate},#{uid},#{uname},1
+	)
+	</insert>
+	
+	<!--  更改自评互评信息-->
+	<update id="updateselfromselfid" parameterType="pd" >
+	update 
+	<include refid="tb_selfeval"></include>
+	set
+		pid=#{pid}
+		<if test="pname != null and pname != ''">
+				,pname = #{pname}
+				</if> 
+				<if test="title != null and title != ''">
+				,title = #{title}
+				</if> 
+				<if test="state != null and state != ''">
+				,state = #{state}
+				</if> 
+				<if test="score != null and score != ''">
+				,score = #{score}
+				</if> 
+				<if test="sdate != null and sdate != ''">
+				,sdate = #{sdate}
+				</if> 
+				<if test="uid != null and uid != ''">
+				,uid = #{uid}
+				</if> 
+				<if test="uname != null and uname != ''">
+				,uname = #{uname}
+				</if> 
+				<if test="remark != null and remark != ''">
+				,remark = #{remark}
+				</if> 
+	where sfid=#{sfid}
+	</update>
+	
+	
+	<!--  根据自评互评编号sfid删除自评互评信息-->
+	<delete id="deleteselfromselfid" parameterType="String" >
+	delete from
+	<include refid="tb_selfeval"></include>
+	where sfid=#{sfid}
+	</delete>
+	
+	</mapper>

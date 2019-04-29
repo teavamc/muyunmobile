@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbResidentMapping">
+	<!-- 字段值 -->
+	<sql id="Resident">
+		rid, name, rtid, sex, age, phone, idcard, ftype, address, company, education, village, 
+    regdate, mddate, isparty, remark
+	</sql>
+	
+	<!--表名 -->
+	<sql id="Residenttable">
+		tb_resident
+	</sql>
+	
+	<!--  查询所有村民信息 -->
+	<select id="getResAll" parameterType="pd" resultType="TbResident">
+		select <include refid="Resident"></include>
+		from <include refid="Residenttable"></include>
+		limit #{begin},#{length} 
+	</select>
+	
+	<!--  根据关键字查询所有村民信息 -->
+	<select id="getResByKey" parameterType="pd" resultType="TbResident">
+		select <include refid="Resident"></include>
+		from <include refid="Residenttable"></include>
+		where 
+		name LIKE CONCAT(CONCAT('%', #{searchInput}),'%') or 
+		idcard LIKE CONCAT(CONCAT('%', #{searchInput}),'%') or 
+		ftype LIKE CONCAT(CONCAT('%', #{searchInput}),'%') or 
+		address LIKE CONCAT(CONCAT('%', #{searchInput}),'%') 
+		limit #{begin},#{length} 
+	</select>
+	
+	<!--  查询所有具体信息 -->
+	<select id="getResidentFromrid" parameterType="pd" resultType="TbResident">
+		select <include refid="Resident"></include>
+		from <include refid="Residenttable"></include>
+		where rid=#{rid}
+	</select>
+	
+	
+	</mapper>

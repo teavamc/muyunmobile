@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbfeedbackMapping">
+	<!--表名 -->
+	<sql id="tbfeedbacktable">
+		tb_feedback
+	</sql>
+	<sql id="tbfeedback">
+		fbid, fbuid, title, ftype, fbdatetime, isread, uid, uname, datetime, remark,content,opinion
+	</sql>
+	
+	<!--查询投诉咨询信息 对用户-->
+	<select id="getFeebBackFromFtype" parameterType="pd" resultType="TbFeedback">
+	select 
+	fbid, fbuid, title, ftype, fbdatetime, isread, uid, uname, datetime, remark,content,opinion
+	from <include refid="tbfeedbacktable"></include> 
+	where isread=#{isread} and fbuid=#{fbuid}
+	order by isread desc,fbdatetime desc
+	limit #{begin},#{length}
+	</select>
+	
+	<!--查询投诉咨询信息  对管理者-->
+	<select id="getFeebBackEdit" parameterType="pd" resultType="TbFeedback">
+	select 
+	fbid, fbuid, title, ftype, fbdatetime, isread, uid, uname, datetime, remark,content,opinion
+	from <include refid="tbfeedbacktable"></include> 
+	where isread=#{isread} and ftype=#{ftype}
+	order by fbdatetime desc
+	limit #{begin},#{length}
+	</select>
+
+<!--根据编号查询投诉咨询信息-->
+	<select id="getFeedBackByFbid" parameterType="pd" resultType="TbFeedback">
+	select 
+	fbid, fbuid, title, ftype, fbdatetime, isread, uid, uname, datetime, remark,content,opinion
+	from <include refid="tbfeedbacktable"></include> 
+	where fbid=#{fbid}
+	</select>
+	
+	<!--查询某用户是否提交了同样标题-->
+	<select id="getFeedBackByFuidAndTitle" parameterType="pd" resultType="TbFeedback">
+	select 
+	fbid, fbuid, title, ftype, fbdatetime, isread, uid, uname, datetime, remark,content,opinion
+	from <include refid="tbfeedbacktable"></include> 
+	where fbuid=#{fbuid} and title=#{title} and ftype=#{ftype}
+	</select>
+	
+
+<!-- 增加投诉咨询 -->
+<insert id="insertFeed" parameterType="pd">
+insert into <include refid="tbfeedbacktable"></include>
+(fbuid, title, ftype, fbdatetime, isread,content, remark)
+values
+(
+#{fbuid},
+#{title},
+#{ftype},
+#{fbdatetime},
+0,
+#{content},
+1
+)
+</insert>
+
+	<!-- 根据fbid修改信息 -->
+<update id="updateFeed" parameterType="pd">
+update 
+<include refid="tbfeedbacktable"></include> 
+set
+fbid=#{fbid}
+<if test="fbuid!=''and fbuid!=null">
+,fbuid=#{fbuid}
+</if>
+<if test="title != '' and title != null">
+,title=#{title}
+</if>
+<if test="ftype != '' and ftype != null">
+,ftype=#{ftype}
+</if>
+<if test="fbdatetime != '' and fbdatetime != null">
+,fbdatetime=#{fbdatetime}
+</if>
+<if test="isread != '' and isread != null">
+,isread=#{isread}
+</if>
+<if test="uid != '' and uid != null">
+,uid=#{uid}
+</if>
+<if test="uname != '' and uname != null">
+,uname=#{uname}
+</if>
+<if test="datetime != '' and datetime != null">
+,datetime=#{datetime}
+</if>
+<if test="remark != '' and remark != null">
+,remark=#{remark}
+</if>
+<if test="content != '' and content != null">
+,content=#{content}
+</if>
+<if test="opinion != '' and opinion != null">
+,opinion=#{opinion}
+</if>
+where fbid=#{fbid}
+</update>
+	
+	
+	<delete id="deleteFeed" parameterType="pd">
+	delete from 
+	<include refid="tbfeedbacktable"></include> 
+	where fbid=#{fbid}
+	</delete>
+	
+	
+	</mapper>

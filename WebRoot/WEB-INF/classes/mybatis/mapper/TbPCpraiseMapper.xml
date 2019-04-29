@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbPCpraiseMapping">
+	<!-- 字段值 -->
+	<sql id="TbPCpraise">
+		prid,pcid, uid
+	</sql>
+	
+	<!--表名 -->
+	<sql id="TbPCpraisetable">
+		tb_pcpraise
+	</sql>
+	<sql id="usersTable">
+		tb_user
+	</sql>
+	
+	<!--  查询暮云圈点赞全部人 -->
+	<select id="getpraiseUname" parameterType="pd" resultType="TbPcpraise">
+		select cp.pcid as pcid,
+		cp.uid as uid,
+		us.uname as uname
+		from (<include refid="TbPCpraisetable"/>cp left join<include refid="usersTable"/>us on cp.uid=us.uid)
+		where cp.pcid=#{pcid}
+		order by prid desc
+	</select>
+	
+	<!--  查询暮云圈点赞数 -->
+	<select id="getPraiseTotle" parameterType="pd" resultType="String">
+		select count(*)
+		from <include refid="TbPCpraisetable"></include>
+		where pcid=#{pcid}
+	</select>
+
+	<!-- 增加点赞-->
+	<insert id="addPcpraise" parameterType="pd">
+	insert
+	into <include refid="TbPCpraisetable"></include>
+	(
+	pcid, uid
+	)
+	values(
+	#{pcid},
+	#{uid}
+	)
+	</insert>
+	
+	<!-- 删除点赞 -->
+	<delete id="delPcpraise" parameterType="pd">
+	delete from <include refid="TbPCpraisetable"></include>
+	where pcid=#{pcid} and
+	uid=#{uid}
+	</delete>
+	
+	
+	</mapper>

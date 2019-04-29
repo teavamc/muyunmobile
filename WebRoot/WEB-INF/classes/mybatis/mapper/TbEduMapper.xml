@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbEduMapping">
+	<!--表名 -->
+	<sql id="edutable">
+		tb_education
+	</sql>
+
+	<sql id="edu">
+		eid,courtit,coursum,courass,adddate,uid,uname,courread,courpic,remark
+	</sql>
+	 
+	<!--查询edu信息-->
+	<select id="getEdu" parameterType="pd" resultType="TbEducation">
+	select 
+	eid,courtit,coursum,courass,adddate,uid,uname,courread,courpic,remark
+	from <include refid="edutable"></include> 
+	order by adddate desc
+	limit ${begin},${length}
+	</select>
+	
+	<!--根据eid查询实时信息-->
+	<select id="getEduFromeid" parameterType="pd" resultType="TbEducation">
+	select 
+	eid,courtit,coursum,courass,adddate,uid,uname,courread,courpic,remark
+	from <include refid="edutable"></include> 
+	where eid=#{eid} 
+	</select>
+	
+	<!--增加用户点击量-->
+	<update id="setEduCourread" parameterType="pd" >
+    <!--注意只有查询才有resultType -->
+        update <include refid="edutable"></include>  set courread=#{courread}  
+        where eid=#{eid}
+      </update>
+	
+	
+	</mapper>

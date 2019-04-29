@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+	<mapper namespace="MuyunResMapping">
+	
+	<!--表名 -->
+	<sql id="muyunres">
+		myc_member
+	</sql>
+
+	<sql id="myres">
+		pid,grouptype,gid,housename,name,sex,nation,relation,idcard,edulevel,birthday,address,phone1,phone2,jod,workplace,income,bankcard1,bankcard2,bankcard3,note
+	</sql>
+	
+	<!--  查询所有村民信息 -->
+	<select id="getAll_res" parameterType="pd" resultType="MuyunRes">
+		select <include refid="myres"></include>
+		from <include refid="muyunres"></include>
+		order by pid desc
+		limit #{begin},#{length} 
+	</select>
+	
+	<!--查询不同组的党员信息，按照Pid序号进排序-->
+	<select id="getAll_res_bygrouptype" parameterType="pd" resultType="MuyunRes">
+		select <include refid="myres"></include>
+		from <include refid="muyunres"></include> 
+		where grouptypetype=#{grouptypetype}
+		order by pid desc
+		limit ${begin},${length}
+	</select>
+	
+	<!--根据pid查询单个居民的信息-->
+	<select id="get_res_byPid" parameterType="String" resultType="MuyunRes">
+		select <include refid="myres"></include>
+		from <include refid="muyunres"></include> 
+		where pid=#{pid} 
+	</select>
+	
+	<!--  根据关键字查询所有村民里面的特定信息 -->
+	<select id="get_res_bySearch" parameterType="pd" resultType="MuyunRes">
+		select <include refid="myres"></include>
+		from <include refid="muyunres"></include>
+		where 
+		name LIKE CONCAT(CONCAT('%', #{searchInput}),'%') or 
+		grouptype LIKE CONCAT(CONCAT('%', #{searchInput}),'%') or 
+		sex LIKE CONCAT(CONCAT('%', #{searchInput}),'%') or 
+		idcard LIKE CONCAT(CONCAT('%', #{searchInput}),'%') 
+		limit #{begin},#{length} 
+	</select>
+	
+	<!-- 统计搜索组别的居民总数  -->
+    <select id="getCount_bygroup" parameterType="string" resultType="Int">
+		select count(pid)
+		from<include refid="muyunres"></include>
+		where grouptype=#{grouptype}
+	</select>
+	
+	<!--统计搜索性别的居民总数 -->
+    <select id="getCount_bySex" parameterType="String" resultType="Int">
+		select count(pid)
+		from<include refid="muyunres"></include>
+		where sex=#{sex}
+	</select>
+	
+	<!--统计所有居民的总数-->
+    <select id="getCount_Res" parameterType="pd" resultType="Int">
+		select  count(pid)
+		from<include refid="muyunres"></include>
+	</select>
+	
+	<!--统计所有组和出现频率-->
+    <select id="getCount_All_types" parameterType="pd" resultType="java.util.HashMap">
+		select  grouptype as grouptype,COUNT(*) as times
+		from<include refid="muyunres"></include>
+		group by grouptype
+	</select>
+	
+	 
+	</mapper>

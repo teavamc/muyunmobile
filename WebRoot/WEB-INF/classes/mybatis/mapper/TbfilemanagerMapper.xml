@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="TbFileManagerMapping">
+	<!--表名 -->
+	<sql id="filetable">
+		tb_filemanager
+	</sql>
+
+	<sql id="file">
+		fileid,filename,uploaddate,uid,uname,url,filesize,downloadnum,zan,remark
+	</sql>
+	
+	<!-- !!!!!!!!!!查询!!!!!!!!!!! -->
+	 
+	<!--根据时间来查询edu信息-->
+	<select id="getfileformupdate" parameterType="pd" resultType="TbFileManager">
+	select 
+	fileid,filename,uploaddate,uid,uname,url,filesize,downloadnum,zan,remark
+	from <include refid="filetable"></include> 
+	order by uploaddate desc
+	limit ${begin},${length}
+	</select>
+	
+	<!--根据下载量来查询 -->
+	<select id="getfileformdownloadnum" parameterType="pd" resultType="TbFileManager">
+	select 
+	fileid,filename,uploaddate,uid,uname,url,filesize,downloadnum,zan,remark
+	from <include refid="filetable"></include> 
+	order by downloadnum desc
+	limit ${begin},${length}
+	</select>
+	
+	<!--  根据关键字查询所有文件   然后按照时间先后顺序排序 -->
+	<select id="getfileformseach" parameterType="pd" resultType="TbFileManager">
+		select 
+		fileid,filename,uploaddate,uid,uname,url,filesize,downloadnum,zan,remark
+		from <include refid="filetable"></include>
+		where 
+		filename LIKE CONCAT(CONCAT('%', #{searchInput}),'%') 
+		
+		order by uploaddate desc
+		limit #{begin},#{length} 
+	</select>
+	
+	<!--根据eid查询实时信息-->
+	<select id="getfilefromfileid" parameterType="String" resultType="TbFileManager">
+	select 
+	fileid,filename,uploaddate,uid,uname,url,filesize,downloadnum,zan,remark
+	from <include refid="filetable"></include> 
+	where fileid=#{fileid} 
+	</select>
+	
+	 <!--查询文件数量用于分页 -->
+      <select id="querryfilenumber" parameterType="int" resultType="Int">
+		select  
+			count(fileid)
+		from 
+			<include refid="filetable"></include>
+			where remark=1
+	</select>
+	
+	
+		<!-- !!!!!!!!!!修改!!!!!!!!!!! -->
+	
+	<!--更新用户下载量-->
+	<update id="setfiledownnumber" parameterType="pd" >
+        update <include refid="filetable"></include>  
+        set downloadnum = downloadnum + 1
+        where filename=#{filename}
+      </update>
+      
+      <!--更新用户点赞量-->
+	<update id="setfilezan" parameterType="pd" >
+        update <include refid="filetable"></include>  
+        set zan++  
+        where fileid=#{fileid}
+      </update>
+      
+      	<!-- !!!!!!!!!!新增!!!!!!!!!!! -->
+
+	
+	<!-- 新增文件 -->
+	<insert id="insertNewFile" parameterType="pd">
+	insert into <include refid="filetable"></include>
+	(filename,uploaddate,uid,uname,url,filesize,remark)
+	values
+	(
+	#{filename},
+	#{uploaddate},
+	#{uid},
+	#{uname},
+	#{url},
+	#{filesize},
+	1
+	)
+	</insert>
+	
+	
+	</mapper>

@@ -1,0 +1,57 @@
+
+.mainhead{
+	background: url(../images/dangmain.png) no-repeat left 2px;
+	position: relative;
+
+	text-align: center;
+	font-size: 30px;
+
+	color: #fff;
+}
+
+
+
+nav#nav_page {
+background: rgb(244, 244, 244); 
+    text-align: center; 
+    padding-top: 7px; 
+    padding-bottom:7px;
+    border-top:1px solid rgb(220, 220, 220); 
+    border-bottom:1px solid rgb(220, 220, 220); 
+}
+
+nav#nav_page a {
+    background: rgb(204, 204, 204);
+    border-radius: 3px;
+    border: 1px solid rgb(175, 175, 175);
+    width: 62px;
+    color: rgb(68, 68, 68);
+    line-height: 25px;
+    font-size: 12px;
+    display: inline-block;
+    margin: 0 10px 0 10px;
+    clip: rect(auto, auto, auto, 20px);
+}
+
+nav#nav_page a.leftpage {
+    float: left;
+}
+
+nav#nav_page a.rightpage {
+    float:right;
+}
+
+nav#nav_page span {
+    line-height: 25px;
+    font-size: 14px;
+    display: inline-block;
+    margin: 0 10px 0 10px;
+    width: 120px;
+    height: 25px;
+    overflow: hidden;
+}
+
+
+
+
+

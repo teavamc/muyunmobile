@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UsersMapper">
+	<!--表名 -->
+	<sql id="usersTable">
+		tb_user
+	</sql>
+	<sql id="roleTable">
+		tb_level
+	</sql>
+
+	<sql id="Field">
+	uid,
+	uname,
+	utypes,
+	loginid,
+	password,
+	headimg,
+	phone,
+	address,
+	isuse,
+	regdate,
+	lastdate,
+	note,
+	usex,
+	uemail,
+	wcid,
+	wcname,
+	idcard,
+	isparty,
+	remark,
+	type
+	</sql>
+	<!-- 判断用户名和密码   登陆   得到用户信息-->
+	<select id="getUserByNameAndPwd" parameterType="pd" resultType="Users">
+		SELECT 
+		ui.uid as uid,
+	uname,
+	ui.utypes as utypes,
+	loginid,
+	ui.password as password,
+	headimg,
+	regdate,
+	phone,
+	address,
+	isuse,
+	lastdate,
+	ui.note as note,
+	usex,
+	uemail,
+	ui.wcid as wcid,
+	ui.wcname as wcname,
+	ui.idcard as idcard,
+	ui.isparty as isparty,
+	ui.remark as remark,
+	ui.type as type
+		from <include refid="usersTable"/> ui
+		<where>
+			<if test="loginid!=null and password!=null">
+			and loginid = #{loginid} and password=#{password} and isuse=1
+			</if>
+		</where>
+	</select>
+
+	<!-- 通过uid获取数据 -->
+	<select id="findByUserid" parameterType="pd" resultType="Users" >
+		SELECT 
+		ui.uid as uid,
+	uname,
+	ui.utypes as utypes,
+	loginid,
+	ui.password as password,
+	headimg,
+	regdate,
+	phone,
+	address,
+	isuse,
+	lastdate,
+	ui.note as note,
+	usex,
+	uemail,
+	ui.wcid as wcid,
+	ui.wcname as wcname,
+	ui.idcard as idcard,
+	ui.isparty as isparty,
+	ui.remark as remark,
+	ui.type as type
+		from (<include refid="usersTable"/> ui 
+		LEFT JOIN <include refid="roleTable"/> r on ui.utypes = r.rname)
+		where 
+			ui.uid = #{uid}
+	</select>
+	
+	
+	<!-- 通过openid(wcid)获取数据 -->
+	<select id="findByOpenid" parameterType="pd" resultType="Users" >
+		SELECT 
+		ui.uid as uid,
+	uname,
+	ui.utypes as utypes,
+	loginid,
+	ui.password as password,
+	headimg,
+	regdate,
+	phone,
+	address,
+	isuse,
+	lastdate,
+	ui.note as note,
+	usex,
+	uemail,
+	ui.wcid as wcid,
+	ui.wcname as wcname,
+	ui.idcard as idcard,
+	ui.isparty as isparty,
+	ui.remark as remark,
+	ui.type as type
+		from (<include refid="usersTable"/> ui 
+		LEFT JOIN <include refid="roleTable"/> r on ui.utypes = r.rname)
+		where 
+			wcid = #{wcid}
+	</select>
+	
+	<!--根据登陆名查询用户名是否存在-->
+	<select id="getUseridByLoginid" parameterType="String" resultType="String">
+		select uid from <include refid="usersTable"></include> 
+		where loginid=#{loginid}
+	</select>
+	
+	<!--根据openid(wcid)查询是否存在   关联党员绑定操作   更改慎重！！-->
+	<select id="getUseridByopenid" parameterType="String" resultType="String">
+		select uid from <include refid="usersTable"></include> 
+		where wcid=#{wcid}
+	</select>
+	
+	<!--根据openid(wcid)查询党员loginid-->
+	<select id="getloginidByopenid" parameterType="String" resultType="String">
+		select loginid from <include refid="usersTable"></include> 
+		where wcid=#{wcid}
+	</select>
+	
+	
+	<!-- 根据用户名查询用户名是否存在 -->
+	<select id="getUseridByUsername" parameterType="String" resultType="String">
+		select uid from <include refid="usersTable"></include> 
+		where uname=#{uname}
+	</select>
+
+	<!-- 新增终端用户信息 -->
+ 	<insert id="insertUser" parameterType="pd" > 
+ 		insert into <include refid="usersTable"></include> ( 
+ 		uname,
+ 		wcid,
+ 		wcname,
+ 		usex,
+ 		headimg,
+ 		regdate,
+ 		utypes,
+ 		rid,
+ 		type
+		) values (
+			#{uname},
+			#{wcid},
+			#{wcname},
+			#{usex},
+			#{headimg},
+			#{regdate},
+			'用户',
+			3,
+			0
+		)
+ 	</insert>
+	<!-- 修改用户密码 -->
+	<update id="editUserPwd" parameterType="pd" >
+ 		update <include refid="usersTable"></include>
+ 		set password=#{password}
+ 		where uid=#{uid}
+ 	</update> 
+	<!-- 修改用户   根据wcid 修改昵称和头像-->
+ 	<update id="editUserInfo" parameterType="pd" > 
+		update  <include refid="usersTable"/>
+		set
+			wcid = #{wcid}
+				<if test="headimg != null and headimg  != ''">
+				,headimg = #{headimg}
+				</if> 
+	
+				<if test="usex != null and usex != ''">
+				,usex = #{usex} 
+				</if> 
+				<if test="wcname != null and wcname != ''">
+				,wcname = #{wcname} 
+				</if> 
+			where  
+				wcid = #{wcid}
+ 	</update>
+ 	
+ 	<!-- 修改用户   根据uid-->
+ 	<update id="editUserInfofromuid" parameterType="pd" > 
+		update  <include refid="usersTable"/>
+		set
+		uid = #{uid}
+		<if test="loginid != null and loginid != ''">
+				,loginid = #{loginid}
+				</if> 
+		<if test="uname != null and uname != ''">
+				,uname = #{uname}
+				</if> 
+				<if test="utype != null and utype != ''">
+				,utypes = #{utype}
+				</if> 
+				<if test="regdate != null and regdate != ''">
+				,regdate = #{regdate}
+				</if> 
+				 
+				<if test="password != null and password != ''">
+				,password = #{password} 
+				</if> 
+				<if test="phone != null and phone != ''">
+				,phone = #{phone} 
+				</if> 
+				<if test="address != null and address != ''">
+				,address = #{address} 
+				</if> 
+				<if test="isuse != null and isuse != ''">
+				,isuse = #{isuse} 
+				</if> 
+				<if test="isparty != null and isparty != ''">
+				,isparty = #{isparty} 
+				</if> 
+				<if test="lastdate != null and lastdate != ''">
+				,lastdate = #{lastdate} 
+				</if> 
+				<if test="note != null and note != ''">
+				,note = #{note} 
+				</if> 
+				<if test="usex != null and usex != ''">
+				,usex = #{usex} 
+				</if> 
+				<if test="uemail != null and uemail != ''">
+				,uemail = #{uemail} 
+				</if> 
+				<if test="idcard != null and idcard != ''">
+				,idcard = #{idcard} 
+				</if> 
+			where  
+				uid = #{uid}
+ 	</update>
+ 	
+ 	<!-- 修改用户登录名，密码，电话号码-->
+ 	<update id="changephone" parameterType="pd" > 
+		update  <include refid="usersTable"/>
+ 			set loginid = #{loginid},password=#{password},phone=#{phone}
+			where  
+				uid = #{uid}
+ 	</update> 
+ 
+ 	<!-- 修改用户是否党员 ，姓名，电话号码-->
+ 	<update id="editisparty" parameterType="pd" > 
+		update  <include refid="usersTable"/>
+ 			set isparty = #{isparty},uname=#{username},phone=#{phonenumber},idcard=#{pidcard}
+			where  
+				uid = #{userid}
+ 	</update> 
+ 	<!-- 修改用户账号可用状态 -->
+ 	<update id="editIsenabled" parameterType="pd" > 
+		update  <include refid="usersTable"/>
+ 			set isuse = #{isuse}				
+			where  
+				uid = #{uid}
+ 	</update> 
+
+</mapper>

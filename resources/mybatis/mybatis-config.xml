@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"  
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<settings> 
+        <setting name="cacheEnabled" value="true" /><!-- 全局映射器启用缓存 -->   
+        <setting name="useGeneratedKeys" value="true" /> 
+        <setting name="defaultExecutorType" value="REUSE" /> 
+    </settings>
+
+	<typeAliases>
+		<!--区域  可能会用到 <typeAlias type="com.infopublic.entity.Area" alias="Area"/>-->
+		<typeAlias type="com.infopublic.entity.PoInfo" alias="PoInfo"/>
+		<typeAlias type="com.infopublic.entity.Log" alias="Log"/>
+		<typeAlias type="com.infopublic.entity.Menu" alias="Menu"/>
+		<typeAlias type="com.infopublic.entity.Role" alias="Role"/>
+		<typeAlias type="com.infopublic.entity.Users" alias="Users"/>
+		<typeAlias type="com.infopublic.entity.TbPartymember" alias="TbPartymember"/>
+		<typeAlias type="com.infopublic.entity.TbSelfeval" alias="TbSelfeval"/>
+		<typeAlias type="com.infopublic.entity.TbJob" alias="Tbjob"/>
+		<typeAlias type="com.infopublic.entity.TbFileManager" alias="TbFileManager"/>
+		<typeAlias type="com.infopublic.entity.TbFeedback" alias="TbFeedback"/>
+		<typeAlias type="com.infopublic.entity.TbYuqing" alias="TbYuqing"/>
+		<typeAlias type="com.infopublic.entity.TbYqcomment" alias="TbYqcomment"/>
+		<typeAlias type="com.infopublic.entity.TbGuide" alias="TbGuide"/>
+		<typeAlias type="com.infopublic.entity.TbXiaocun" alias="TbXiaocun"/>
+		<typeAlias type="com.infopublic.entity.TbGroup" alias="TbGroup"/>
+		<typeAlias type="com.infopublic.entity.TbResident" alias="TbResident"/>
+		<typeAlias type="com.infopublic.entity.TbPartycircle" alias="TbPartycircle"/>
+		<typeAlias type="com.infopublic.entity.TbPccomment" alias="TbPccomment"/>
+		<typeAlias type="com.infopublic.entity.TbPcpraise" alias="TbPcpraise"/>
+		<typeAlias type="com.infopublic.entity.TbShishi" alias="TbShishi"/>
+		<typeAlias type="com.infopublic.entity.TbEducation" alias="TbEducation"/>
+		<typeAlias type="com.infopublic.entity.TbEducomment" alias="TbEducomment"/>
+		<typeAlias type="com.infopublic.entity.TbHuodong" alias="TbHuodong"/>
+		<typeAlias type="com.infopublic.entity.TbZhiban" alias="TbZhiban"/>
+		<typeAlias type="com.infopublic.entity.TbSencollect" alias="TbSencollect"/>
+		<typeAlias type="com.infopublic.entity.GroupMuyun" alias="GroupMuyun"/>
+		<typeAlias type="com.infopublic.entity.MuyunRes" alias="MuyunRes"/>
+		<typeAlias type="com.infopublic.util.PageData" alias="pd"/>
+		<!-- 分页 -->
+		<typeAlias type="com.infopublic.entity.Page" alias="Page"/>
+
+	</typeAliases>
+	
+	<plugins>
+		<plugin interceptor="com.infopublic.plugin.PagePlugin">
+			<property name="dialect" value="mysql"/>
+			<property name="pageSqlId" value=".*listPage.*"/>
+		</plugin>
+	</plugins>
+	
+</configuration>
